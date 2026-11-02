@@ -153,9 +153,20 @@ def read_feed(feed):
         except ValueError:
             level = 0
         credits = [c.strip() for c in re.split(r"[,;]", f.get("crediti", "")) if c.strip()]
+        problems = []
+        if "livello" not in f:
+            problems.append("no 'Livello:' line")
+        elif level not in (3, 4):
+            problems.append(f"'Livello: {f['livello']}' is not 3 or 4")
+        if not credits:
+            problems.append("no 'Crediti:' line" if "crediti" not in f else "'Crediti:' is empty")
+        if "raccolta" not in f:
+            problems.append("no 'Raccolta:' line (it would go under 'Altre registrazioni')")
         if level not in (3, 4) or not credits:
-            log(f"  skipped (no level 3/4 or no credit): {title!r}")
+            log(f"  skipped {title!r}: " + "; ".join(problems))
             continue
+        if problems:
+            log(f"  note {title!r}: " + "; ".join(problems))
         enc = item.find("enclosure")
         rec = {
             "n": f.get("n") or "",
