@@ -2,17 +2,17 @@
   "_leggimi": "Edit this file to change settings, feeds and collections. Recordings themselves come from AzuraCast. See README.md.",
   "impostazioni": {
     "diretta": {
-      "stream": https://radio.barrios.it/listen/no_signal/radio.mp3,
-      "pagina": https://radio.barrios.it/public/no_signal
+      "stream": "https://radio.barrios.it/listen/no_signal/radio.mp3",
+      "pagina": "https://radio.barrios.it/public/no_signal"
     },
     "podcast": {
       "pagina": null,
       "feed": null
     },
-    "contatto": Ned Kaar (hello@nedkaar.com),
+    "contatto": "Ned Kaar (hello@nedkaar.com)",
     "partecipa": {
-      "contatto": Gemma Marchegani,
-      "club_incontro": Il giovedì alle 18:30
+      "contatto": "Gemma Marchegani",
+      "club_incontro": "Il giovedì alle 18:30"
     }
   },
   "feed": [
