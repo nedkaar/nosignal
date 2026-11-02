@@ -1,0 +1,42 @@
+# Rebuilds the NO SIGNAL archive from AzuraCast and publishes the site.
+# Runs every hour, whenever something is pushed to main, and on demand
+# (Actions tab → "Aggiorna archivio" → Run workflow).
+name: Aggiorna archivio
+
+on:
+  schedule:
+    - cron: "17 * * * *"   # every hour, at :17
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build archive.json from AzuraCast
+        run: python3 scripts/build_archive.py sorgenti.json site/archive.json
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
