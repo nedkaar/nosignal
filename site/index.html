@@ -1,0 +1,852 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="ns-archive" content="archive.json">
+<link rel="alternate" hreflang="en" href="en/">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Archivio NO SIGNAL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Doto:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: the page reads like the building's own hardware — an LED facade that tunes in out of static,
+   a radio dial for the drawers, lift-style floor displays on each recording, a mixer meter for consent,
+   and a press pass for Design Week. Concrete grey ground, signal orange, ink. */
+:root{
+  --signal:#ff5a1f;
+  --signal-ink:#170d07;
+  --concrete:#e4e2dc;
+  --paper:#f0eee9;
+  --ink:#151311;
+  --muted:#6b655e;
+  --line:#c9c5bd;
+  --pending:#9d968e;
+  --led-bg:#120b07;
+  --led-off:#331609;
+  --led-text:#ffb08d;
+  --display:"Archivo",ui-sans-serif,system-ui,sans-serif;
+  --dot:"Doto","IBM Plex Mono",ui-monospace,monospace;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --concrete:#141311;--paper:#1c1a18;--ink:#eee9e3;--muted:#a39a91;--line:#35302b;--pending:#6e665e;color-scheme:dark}}
+:root[data-theme="dark"]{--concrete:#141311;--paper:#1c1a18;--ink:#eee9e3;--muted:#a39a91;--line:#35302b;--pending:#6e665e;color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--concrete);color:var(--ink);font-family:var(--display);font-size:16px;line-height:1.5;margin:0;font-variation-settings:"wdth" 100}
+body.playing{padding-bottom:96px}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:20px}
+a{color:inherit}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
+button{font:inherit;color:inherit;cursor:pointer}
+.label{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.big{font-family:var(--display);font-stretch:62%;font-variation-settings:"wdth" 62;font-weight:850;text-transform:uppercase;letter-spacing:-.01em;line-height:.86;margin:0}
+
+/* ---------- Facade ---------- */
+.facade{background:var(--signal);color:var(--signal-ink);position:relative;overflow:hidden}
+.facade .wrap{padding-block:20px 0;display:grid;gap:20px}
+.topbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px 24px;font-family:var(--mono);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase}
+.topbar nav{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+.topbar nav a{text-decoration:none;border-bottom:1px solid transparent}
+.topbar nav a:hover{border-bottom-color:currentColor}
+.live{display:inline-flex;align-items:center;gap:8px;background:var(--signal-ink);color:var(--signal);border:0;border-radius:2px;padding:7px 12px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.live .dot{width:8px;height:8px;border-radius:50%;background:var(--signal)}
+@media (prefers-reduced-motion:no-preference){.live .dot{animation:blink 1.6s steps(2,end) infinite}}
+@keyframes blink{50%{opacity:.2}}
+
+.panel{background:var(--led-bg);border-radius:3px;padding:clamp(12px,2.6vw,26px);position:relative;box-shadow:inset 0 0 0 1px #000,0 1px 0 rgba(255,255,255,.25)}
+.panel canvas{display:block;width:100%;height:auto}
+.panel .bolt{position:absolute;width:7px;height:7px;border-radius:50%;background:#2b1a10;box-shadow:inset 0 1px 0 #4a3020}
+.panel .bolt.tl{top:7px;left:7px}.panel .bolt.tr{top:7px;right:7px}.panel .bolt.bl{bottom:7px;left:7px}.panel .bolt.br{bottom:7px;right:7px}
+.panel-cap{display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-top:-8px;flex-wrap:wrap}
+
+.thesis{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px 40px;align-items:end;padding-bottom:28px}
+.thesis h1{font-size:clamp(44px,8.4vw,112px)}
+.thesis p{margin:0;max-width:40ch;font-size:15.5px;line-height:1.45}
+@media (max-width:760px){.thesis{grid-template-columns:minmax(0,1fr)}}
+
+.ticker{background:var(--signal-ink);color:var(--signal);overflow:hidden;white-space:nowrap;border-top:1px solid #000}
+.ticker .track{display:inline-flex;font-family:var(--dot);font-weight:700;font-size:22px;letter-spacing:.06em;padding-block:9px 7px;text-transform:uppercase}
+.ticker .track span{padding-right:3em}
+@media (prefers-reduced-motion:no-preference){.ticker .track{animation:tick 60s linear infinite}}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+/* ---------- Sections ---------- */
+main{display:grid}
+section{padding-block:72px}
+.s-head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:8px 24px;margin-bottom:36px}
+.s-head h2{font-size:clamp(56px,11vw,148px)}
+.s-head .label{text-align:right;max-width:24ch}
+@media (max-width:560px){.s-head{grid-template-columns:minmax(0,1fr)}.s-head .label{text-align:left}}
+
+/* ---------- Dial ---------- */
+.dial{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:18px clamp(14px,3vw,28px) 14px;margin-bottom:28px;position:relative}
+.dial-top{display:flex;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.scale{position:relative;height:30px;margin-inline:2%;
+  background:
+    repeating-linear-gradient(90deg,var(--ink) 0 1px,transparent 1px 100%) 0 100%/2.5% 12px no-repeat,
+    repeating-linear-gradient(90deg,var(--ink) 0 1px,transparent 1px 100%) 0 100%/12.5% 22px no-repeat;
+  background-repeat:repeat-x;border-bottom:1px solid var(--ink)}
+.needle{position:absolute;top:-8px;bottom:-30px;width:2px;background:var(--signal);left:12.5%;transform:translateX(-1px);transition:left .5s cubic-bezier(.5,1.6,.4,1);box-shadow:0 0 6px var(--signal)}
+@media (prefers-reduced-motion:reduce){.needle{transition:none}}
+.stations{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-inline:2%;margin-top:10px}
+.stations button{background:none;border:0;padding:8px 4px 4px;display:grid;justify-items:center;gap:2px;text-align:center}
+.stations .st{font-family:var(--display);font-stretch:62%;font-variation-settings:"wdth" 62;font-weight:800;text-transform:uppercase;font-size:clamp(22px,3.4vw,34px);line-height:1;color:var(--muted)}
+.stations .c{font-family:var(--mono);font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.stations button[aria-pressed="true"] .st{color:var(--ink)}
+.stations button:hover .st{color:var(--ink)}
+.cat-note{margin:0 0 36px;font-size:16px;max-width:60ch}
+.cat-note b{font-weight:600}
+
+/* ---------- Groups ---------- */
+.groups{display:grid;gap:64px}
+.group{display:grid;gap:20px}
+.group-head{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 28px;align-items:start}
+.group-no{font-family:var(--dot);font-weight:900;font-size:clamp(84px,13vw,168px);line-height:.78;color:var(--signal);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.group-meta{display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:8px;align-items:center}
+.chip{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:var(--ink);color:var(--concrete);padding:3px 8px;border-radius:2px}
+.group h3{font-size:clamp(28px,4vw,46px);margin:0 0 10px;line-height:1;font-stretch:80%;font-variation-settings:"wdth" 80;font-weight:750;text-wrap:balance;letter-spacing:-.01em}
+.group-desc{margin:0;max-width:62ch}
+.progress{display:flex;align-items:center;gap:10px;margin-top:12px;font-family:var(--mono);font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.progress .bar{flex:0 1 180px;height:6px;background:var(--line);position:relative;border-radius:1px;overflow:hidden}
+.progress .bar i{position:absolute;inset:0 auto 0 0;background:var(--signal)}
+@media (max-width:560px){.group-head{grid-template-columns:minmax(0,1fr)}}
+
+/* ---------- Running order ---------- */
+.log{background:var(--paper);border:1px solid var(--line);border-radius:4px}
+.row{display:grid;grid-template-columns:3rem 4.2rem minmax(0,10rem) minmax(0,1fr) auto;gap:6px 18px;padding:16px 18px;border-bottom:1px solid var(--line);align-items:center}
+.row:last-child{border-bottom:0}
+.row .n{font-family:var(--mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.floor{background:var(--led-bg);color:var(--signal);border-radius:3px;display:grid;justify-items:center;padding:5px 4px 3px;line-height:1;width:4.2rem}
+.floor b{font-family:var(--dot);font-weight:900;font-size:24px;letter-spacing:.02em}
+.floor span{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;color:var(--led-text);opacity:.8;margin-top:3px;text-transform:uppercase}
+.floor.none{background:transparent;border:1px dashed var(--line)}
+.row .space{font-weight:650;line-height:1.2;font-size:15.5px}
+.row .room{display:block;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em;margin-top:3px;font-weight:400}
+.row .what{min-width:0}
+.row .what p{margin:0;line-height:1.35}
+.row .credit{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:4px}
+.row .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);border:1px solid var(--line);padding:1px 5px;margin-right:8px;border-radius:2px}
+.row .side{display:grid;justify-items:end;gap:8px}
+.row.pending .space,.row.pending .what p{color:var(--pending)}
+.row.pending .floor{opacity:.55}
+.row.current{background:color-mix(in srgb,var(--signal) 12%,var(--paper))}
+.actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;text-decoration:none;border:1px solid var(--ink);background:none;padding:5px 10px;border-radius:2px;white-space:nowrap}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.btn.play{background:var(--signal);border-color:var(--signal);color:var(--signal-ink);font-weight:600}
+.btn.play:hover{background:var(--ink);border-color:var(--ink);color:var(--signal)}
+.soon{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.dur{font-family:var(--mono);font-size:12px;font-variant-numeric:tabular-nums;color:var(--muted)}
+@media (max-width:760px){
+  .row{grid-template-columns:4.2rem minmax(0,1fr);padding:14px}
+  .row .n{display:none}
+  .row .floor{grid-row:span 3;align-self:start}
+  .row .space,.row .what,.row .side{grid-column:2}
+  .row .side{justify-items:start}
+  .actions{justify-content:flex-start}
+}
+
+/* Consent meter (row) */
+.meter{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
+.cells{display:flex;gap:2px;align-items:flex-end}
+.cells i{width:6px;display:block;background:var(--line)}
+.cells i:nth-child(1){height:5px}.cells i:nth-child(2){height:7px}.cells i:nth-child(3){height:9px}.cells i:nth-child(4){height:11px}.cells i:nth-child(5){height:13px}
+.cells i.on{background:var(--signal)}
+.meter.wait .cells i{background:none;outline:1px dashed var(--pending);outline-offset:-1px}
+
+.empty{border:1px dashed var(--line);padding:32px;color:var(--muted);display:grid;gap:4px;border-radius:4px}
+.empty b{color:var(--ink);font-weight:600}
+
+/* ---------- Mixer (consent levels) ---------- */
+.how{background:var(--paper);border-block:1px solid var(--line)}
+.mixer{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(8px,2vw,20px);align-items:end;background:var(--led-bg);border-radius:4px;padding:clamp(16px,3vw,28px);color:#efe4da}
+.ch{display:grid;gap:12px;align-content:end}
+.stack{display:grid;gap:4px}
+.stack i{height:14px;border-radius:1px;background:#2a1a10;display:block}
+.ch.on .stack i.lit{background:var(--signal);box-shadow:0 0 8px rgba(255,90,31,.55)}
+.ch.off .stack i.lit{background:#5b4537}
+.ch .num{font-family:var(--dot);font-weight:900;font-size:clamp(40px,6vw,64px);line-height:.8;color:#5b4537}
+.ch.on .num{color:var(--signal)}
+.ch b{font-size:15px;font-weight:650;display:block}
+.ch .d{font-size:13px;color:#b9a99b;line-height:1.35}
+.ch .w{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#8a776a}
+.ch.on .w{color:var(--led-text)}
+.mixer-cap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:10px}
+@media (max-width:700px){
+  .mixer{grid-template-columns:minmax(0,1fr);gap:14px}
+  .ch{grid-template-columns:3.4rem 5rem minmax(0,1fr);align-items:center;gap:6px 14px}
+  .stack{grid-auto-flow:column;grid-template-rows:none;gap:3px;align-self:center;direction:rtl}
+  .stack i{width:100%;height:12px}
+  .ch .txt{grid-column:3}
+}
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin-top:40px}
+.rules h4{margin:0 0 6px;font-size:18px;font-stretch:80%;font-variation-settings:"wdth" 80;font-weight:750;line-height:1.15;text-wrap:balance}
+.rules p{margin:0;font-size:14.5px;color:var(--muted);max-width:40ch}
+.contact{margin:28px 0 0;font-family:var(--mono);font-size:13px}
+@media (max-width:760px){.rules{grid-template-columns:minmax(0,1fr)}}
+
+/* ---------- Project ---------- */
+.intro{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:24px 48px;align-items:start}
+.intro .lead{font-size:clamp(22px,2.8vw,30px);line-height:1.25;margin:0;font-weight:500;text-wrap:pretty;letter-spacing:-.005em}
+.intro .aside p{margin:0 0 12px;color:var(--muted);font-size:15px}
+@media (max-width:760px){.intro{grid-template-columns:minmax(0,1fr)}}
+
+.pass-wrap{margin-top:56px;display:grid;grid-template-columns:minmax(0,22rem) minmax(0,1fr);gap:32px 48px;align-items:start}
+@media (max-width:860px){.pass-wrap{grid-template-columns:minmax(0,1fr)}}
+.pass{background:var(--signal);color:var(--signal-ink);border-radius:10px;padding:40px 22px 22px;position:relative;max-width:22rem;width:100%;transform:rotate(-2deg);box-shadow:0 18px 30px -18px rgba(0,0,0,.45)}
+.pass::before{content:"";position:absolute;top:14px;left:50%;width:56px;height:10px;margin-left:-28px;border-radius:6px;background:var(--concrete);box-shadow:inset 0 1px 2px rgba(0,0,0,.35)}
+.pass .press{font-family:var(--display);font-stretch:62%;font-variation-settings:"wdth" 62;font-weight:900;font-size:76px;line-height:.8;text-transform:uppercase;letter-spacing:-.01em;margin:6px 0 4px}
+.pass .sub2{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.pass .rule{border-top:2px solid var(--signal-ink);margin:16px 0 12px}
+.pass dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;margin:0;font-size:13.5px}
+.pass dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding-top:2px}
+.pass dd{margin:0;font-weight:600}
+.pass dd.blank{border-bottom:1.5px solid var(--signal-ink);min-height:1.3em}
+.roles-cap{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;margin:16px 0 6px}
+.roles{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:13.5px;font-weight:600;line-height:1.25}
+.roles li{display:grid;grid-template-columns:16px minmax(0,1fr);gap:8px;align-items:start}
+.roles .box{width:14px;height:14px;border:1.5px solid var(--signal-ink);border-radius:2px;margin-top:1px}
+.roles-foot{margin:14px 0 0;background:var(--signal-ink);color:var(--signal);border-radius:4px;padding:9px 12px;font-family:var(--mono);font-size:11.5px;letter-spacing:.04em}
+.dw > p + p{margin-top:-14px}
+
+/* ---------- Partecipa ---------- */
+.join{border-top:1px solid var(--line)}
+.join-lead{font-size:clamp(20px,2.4vw,26px);line-height:1.3;max-width:44ch;margin:0 0 36px;font-weight:500}
+.invites{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.invite{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:18px;display:grid;grid-template-rows:auto auto 1fr auto;gap:10px;min-width:0}
+.invite .slot{justify-self:start;background:var(--led-bg);color:var(--signal);font-family:var(--dot);font-weight:900;font-size:17px;letter-spacing:.04em;text-transform:uppercase;padding:5px 9px 3px;border-radius:3px;line-height:1}
+.invite h3{margin:0;font-size:clamp(24px,2.6vw,30px);line-height:.95;font-stretch:72%;font-variation-settings:"wdth" 72;font-weight:800;text-transform:uppercase;text-wrap:balance}
+.invite p{margin:0;font-size:14.5px;color:var(--muted);line-height:1.45}
+.invite .goes{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--line);padding-top:10px;text-decoration:none}
+.invite .goes b{color:var(--ink);font-weight:600}
+.invite.club{background:var(--signal);border-color:var(--signal);color:var(--signal-ink)}
+.invite.club p{color:var(--signal-ink)}
+.invite.club .goes{color:var(--signal-ink);border-top-color:var(--signal-ink);font-weight:600}
+.invite.club .goes:hover{text-decoration:underline}
+@media (max-width:900px){.invites{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.invites{grid-template-columns:minmax(0,1fr)}}
+.steps{margin-top:40px}
+.steps ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:2px solid var(--ink);counter-reset:s}
+.steps li{counter-increment:s;padding:16px 24px 0 0;font-size:15.5px;line-height:1.45;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px}
+.steps li::before{content:counter(s);font-family:var(--dot);font-weight:900;font-size:44px;line-height:.8;color:var(--signal)}
+.steps li b{font-weight:650}
+@media (max-width:760px){.steps ol{grid-template-columns:minmax(0,1fr);gap:14px}}
+.staff{margin:28px 0 0;font-family:var(--mono);font-size:13px;max-width:70ch}
+.staff b{font-weight:600}
+@media (prefers-reduced-motion:reduce){.pass{transform:none}}
+
+.dw h3{font-size:clamp(30px,4.4vw,52px);margin:0 0 10px;line-height:.95;font-stretch:72%;font-variation-settings:"wdth" 72;font-weight:800;text-transform:uppercase;text-wrap:balance}
+.dw > p{margin:0 0 28px;max-width:60ch}
+.sub{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;margin:0 0 12px;color:var(--muted)}
+.format{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:4px;background:var(--paper);margin-bottom:28px}
+.format div{padding:14px;border-right:1px solid var(--line);display:grid;gap:4px;align-content:start}
+.format div:last-child{border-right:0;background:var(--ink);color:var(--paper);border-radius:0 3px 3px 0}
+.format i{font-style:normal;font-family:var(--mono);font-size:10.5px;color:var(--muted);letter-spacing:.08em}
+.format div:last-child i{color:var(--signal)}
+.format b{font-size:16px;font-weight:700;line-height:1.15}
+.format span{font-size:13.5px;color:var(--muted);line-height:1.35}
+.format .q{font-size:17px;color:var(--signal);font-weight:600;line-height:1.2}
+@media (max-width:760px){.format{grid-template-columns:minmax(0,1fr)}.format div{border-right:0;border-bottom:1px solid var(--line)}.format div:last-child{border-bottom:0;border-radius:0 0 3px 3px}}
+.path{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));position:relative}
+.path::before{content:"";position:absolute;left:0;right:0;top:6px;border-top:2px dotted var(--ink)}
+.path li{position:relative;padding:22px 14px 0 0;display:grid;gap:2px}
+.path li::before{content:"";position:absolute;top:0;left:0;width:14px;height:14px;border-radius:50%;background:var(--concrete);border:2px solid var(--ink)}
+.path li.last::before{background:var(--signal);border-color:var(--signal)}
+.path .when{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.path li.last .when{color:var(--signal);font-weight:600}
+.path b{font-size:15px;font-weight:600;line-height:1.25}
+@media (max-width:640px){.path{grid-template-columns:minmax(0,1fr);gap:16px}.path::before{left:6px;right:auto;top:0;bottom:0;border-top:0;border-left:2px dotted var(--ink)}.path li{padding:0 0 0 28px}}
+.feed{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+
+.who{margin-top:64px;border-top:2px solid var(--ink);padding-top:18px}
+.who-text{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 40px;margin-top:4px}
+.who-text p{margin:0;font-size:15.5px;line-height:1.6;max-width:60ch}
+.who-text b{font-weight:650}
+@media (max-width:760px){.who-text{grid-template-columns:minmax(0,1fr)}}
+
+footer{background:var(--signal-ink);color:var(--signal)}
+footer .wrap{padding-block:28px 40px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px 24px}
+footer .sig{font-family:var(--dot);font-weight:900;font-size:clamp(36px,7vw,72px);line-height:.8;letter-spacing:.02em}
+footer .label{color:var(--led-text)}
+
+/* ---------- Player ---------- */
+.player{position:fixed;left:0;right:0;bottom:0;background:var(--led-bg);color:#f3e9e1;padding:12px 20px calc(12px + env(safe-area-inset-bottom,0px));z-index:10;border-top:2px solid var(--signal)}
+.player .in{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px 16px;align-items:center}
+.pbtn{width:42px;height:42px;border-radius:50%;border:0;background:var(--signal);color:var(--signal-ink);display:grid;place-items:center;font-size:15px}
+.pinfo{min-width:0}
+.ptitle{font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.psub{font-family:var(--mono);font-size:11.5px;color:#b9aca1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pbar{grid-column:1/-1;display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11.5px;color:#b9aca1;font-variant-numeric:tabular-nums}
+.pbar input{flex:1;accent-color:var(--signal);min-width:0}
+.pside{display:flex;gap:8px;align-items:center}
+.pside a,.pside button{font-family:var(--mono);font-size:12px;color:#f3e9e1;background:none;border:1px solid #5a4a3f;border-radius:2px;padding:4px 10px;text-decoration:none;white-space:nowrap}
+.perr{color:var(--signal)}
+</style>
+</head>
+<body>
+
+
+<!--
+  =========== FALLBACK DATA — the live archive comes from archive.json, built from AzuraCast (see README.md). Settings live in sorgenti.json. ===========
+
+  "impostazioni"
+    diretta.stream  direct stream URL (the AzuraCast mount, e.g. https://radio.barrios.it/listen/<station>/radio.mp3)
+    diretta.pagina  the station's public page, opened if the stream can't play here
+    podcast.pagina  AzuraCast public episodes page      podcast.feed  the RSS feed
+    contatto        who to write to for a removal (shown in "Come funziona")
+    partecipa.contatto      how to get involved, e.g. "Scrivi a Ned su WhatsApp: 3xx xxx xxxx" (step 1 of "Partecipa")
+    partecipa.club_incontro when the Radio Club meets, e.g. "Il giovedì alle 17:00, alla postazione"
+    Leave any of these null and its button stays hidden.
+
+  "raccolte"   one per broadcast or episode. "tipo": "Trasmissione dal vivo" | "Puntata" | "Banca sonora"
+  "registrazioni" inside each raccolta, in broadcast order:
+    categoria  "voci" | "musica" | "suoni"
+    piano      the floor display reads it: "Primo piano…" → 1, "Piano terra…" → T,
+               "Seminterrato…" → S, "Esterno…" → EST, anything else → blank
+    livello    null until chosen, then 3 (Archivio) or 4 (Banca). Nothing below 3 belongs here.
+    crediti    ["Nome", "Soprannome", "Anonimo"] — required before the recording shows in full
+    durata     "mm:ss"
+    audio      direct link to the audio file (the AzuraCast episode's media URL) — powers ▶ Ascolta
+    link       the episode's page on AzuraCast — powers "Apri ↗"
+    fonte      optional source code from the register: MADEHERE, LIVE, PD, CC-BY, CC-BY-SA
+  A recording shows names, duration and buttons only when livello is 3 or 4 AND crediti is filled.
+-->
+<script type="application/json" id="archivio">
+{
+  "impostazioni": {
+    "diretta": { "stream": null, "pagina": null },
+    "podcast": { "pagina": null, "feed": null },
+    "contatto": null,
+    "partecipa": { "contatto": null, "club_incontro": null }
+  },
+  "raccolte": [
+    {
+      "numero": "00",
+      "tipo": "Trasmissione dal vivo",
+      "titolo": "La prima trasmissione",
+      "data": "2026-10-02",
+      "luogo": "Barrio's, Barona",
+      "descrizione": "Una sola trasmissione ha accompagnato una visita a piedi del Barrio's, dalla postazione al primo piano fino agli spazi all'esterno. In ogni spazio un ricevitore suonava quello che c'era da sentire: storie, registrazioni, musica del quartiere, e silenzio dove una stanza è chiusa.",
+      "registrazioni": [
+        {"n":"1A","categoria":"voci","spazio":"NO SIGNAL","piano":"Primo piano · postazione radio","titolo":"Un'intervista su un progetto in arrivo al Barrio's a fine ottobre","crediti":[],"livello":null,"durata":null,"audio":null,"link":null,"fonte":"LIVE"},
+        {"n":"1B","categoria":"voci","spazio":"NO SIGNAL","piano":"Primo piano · postazione radio","titolo":"Un'intervista sulla storia della Barona","crediti":[],"livello":null,"durata":null,"audio":null,"link":null,"fonte":"LIVE"},
+        {"n":"1C","categoria":"voci","spazio":"NO SIGNAL","piano":"Primo piano · postazione radio","titolo":"Due voci parlano della Barona, prima parte","crediti":[],"livello":null,"durata":null,"audio":null,"link":null,"fonte":"LIVE"},
+        {"n":"1D","categoria":"voci","spazio":"NO SIGNAL","piano":"Primo piano · postazione radio","titolo":"Due voci parlano della Barona, seconda parte","crediti":[],"livello":null,"durata":null,"audio":null,"link":null,"fonte":"LIVE"},
+        {"n":"2","categoria":"voci","spazio":"Ufficio","piano":"Primo piano","titolo":"Il lavoro del Barrio's, raccontato da chi lo fa","crediti":[],"livello":null,"durata":null,"audio":null,"link":null,"fonte":"LIVE"},
+        {"n":"3","categoria":"voci","spazio":"Doposcuola","piano":"Primo piano","titolo":"Il primo giorno di doposcuola","crediti":[],"livello":null,"durata":null,"audio":null,"link":null,"fonte":"LIVE"},
+        {"n":"4","categoria":"suoni","spazio":"Studio","piano":"Piano terra","titolo":"Lo studio di registrazione, chiuso durante la visita ma attivo","crediti":[],"livello":null,"durata":null,"audio":null,"link":null,"fonte":"LIVE"},
+        {"n":"5","categoria":"voci","spazio":"Murales","piano":"Esterno · piano terra","titolo":"Un'introduzione ai murales di Piazza delle Donne Partigiane","crediti":[],"livello":null,"durata":null,"audio":null,"link":null,"fonte":"LIVE"},
+        {"n":"6","categoria":"voci","spazio":"Sala Prove","piano":"Esterno · primo piano, su per la rampa","titolo":"La classe di italiano L2 lavora sull'intonazione con l'attrezzatura della radio","crediti":[],"livello":null,"durata":null,"audio":null,"link":null,"fonte":"LIVE"},
+        {"n":"7","categoria":"suoni","spazio":"Teatro","piano":"Esterno · piano terra","titolo":"Il teatro chiuso, in attesa della ristrutturazione","crediti":[],"livello":null,"durata":null,"audio":null,"link":null,"fonte":"LIVE"},
+        {"n":"8","categoria":"voci","spazio":"Barrio's Live","piano":"Esterno · piano terra","titolo":"Hip hop e il lavoro della cooperativa Barrio's Live","crediti":[],"livello":null,"durata":null,"audio":null,"link":null,"fonte":"LIVE"}
+      ]
+    }
+  ]
+}
+</script>
+
+<header class="facade">
+  <div class="wrap">
+    <div class="topbar">
+      <span>Barrio's · Barona, Milano</span>
+      <nav aria-label="Sezioni">
+        <a href="en/" lang="en" hreflang="en">EN</a>
+        <a href="#archivio">Archivio</a>
+        <a href="#partecipa">Partecipa</a>
+        <a href="#come-funziona">Come funziona</a>
+        <a href="#progetto">Il progetto</a>
+        <button type="button" class="live" id="live-btn" hidden><span class="dot" aria-hidden="true"></span>Ascolta in diretta</button>
+      </nav>
+    </div>
+    <div class="panel" role="img" aria-label="Lo schermo a LED sulla facciata del Barrio's: NO SIGNAL">
+      <span class="bolt tl"></span><span class="bolt tr"></span><span class="bolt bl"></span><span class="bolt br"></span>
+      <canvas id="led" width="1000" height="160"></canvas>
+    </div>
+    <div class="panel-cap"><span>Schermo LED, facciata del Barrio's</span><span>Mostra queste due parole da anni</span></div>
+    <div class="thesis">
+      <h1 class="big">Qui è il quartiere a fare le domande</h1>
+      <p>La Barona di solito viene raccontata da altri. NO SIGNAL è la radio di Barrio's: voci, musica e suoni del quartiere, pubblicati solo con il consenso di chi parla.</p>
+    </div>
+  </div>
+  <div class="ticker" aria-hidden="true"><div class="track" id="ticker"></div></div>
+</header>
+
+<main>
+  <section id="archivio" aria-labelledby="h-archivio">
+    <div class="wrap">
+      <div class="s-head">
+        <h2 class="big" id="h-archivio">Archivio</h2>
+        <span class="label" id="count"></span>
+      </div>
+
+      <div class="dial">
+        <div class="dial-top"><span class="label">Sintonizza</span><span class="label" id="dial-now"></span></div>
+        <div class="scale" aria-hidden="true"><span class="needle" id="needle"></span></div>
+        <div class="stations" role="group" aria-label="Categorie">
+          <button type="button" data-cat="tutto" aria-pressed="true"><span class="st">Tutto</span><span class="c" data-count="tutto"></span></button>
+          <button type="button" data-cat="voci" aria-pressed="false"><span class="st">Voci</span><span class="c" data-count="voci"></span></button>
+          <button type="button" data-cat="musica" aria-pressed="false"><span class="st">Musica</span><span class="c" data-count="musica"></span></button>
+          <button type="button" data-cat="suoni" aria-pressed="false"><span class="st">Suoni</span><span class="c" data-count="suoni"></span></button>
+        </div>
+      </div>
+      <p class="cat-note" id="cat-note"></p>
+      <div class="groups" id="groups"></div>
+    </div>
+  </section>
+
+  <section id="partecipa" class="join" aria-labelledby="h-partecipa">
+    <div class="wrap">
+      <div class="s-head">
+        <h2 class="big" id="h-partecipa">Partecipa</h2>
+        <span class="label">La radio la fanno le persone che passano di qui</span>
+      </div>
+      <p class="join-lead">NO SIGNAL è la radio di Barrio's. Quando nessuno è in onda, suona il palazzo. Quando ci sei tu, suoni tu. Ci sono quattro modi per entrare.</p>
+
+      <div class="invites">
+        <article class="invite">
+          <span class="slot">Una fascia oraria</span>
+          <h3>Hai un'ora? La radio è tua.</h3>
+          <p>Parla di quello che ti piace: calcio, ricette, il quartiere, i tuoi amici, niente. Da solo o in compagnia. Non serve saperlo fare, ti mostriamo noi.</p>
+          <span class="goes">Nell'archivio: <b>Voci</b></span>
+        </article>
+        <article class="invite">
+          <span class="slot">Musica</span>
+          <h3>Suoni? Canti? Fai beat?</h3>
+          <p>Porta la tua musica in onda, dal vivo o registrata. Solo pezzi tuoi, o di chi ti ha dato il permesso, con il tuo nome o un nome d'arte.</p>
+          <span class="goes">Nell'archivio: <b>Musica</b></span>
+        </article>
+        <article class="invite">
+          <span class="slot">Suoni</span>
+          <h3>Registra un posto.</h3>
+          <p>La scala, la piazza, il sottopasso, il cancello che sbatte. Bastano un telefono e un minuto. I suoni senza voci entrano nella banca sonora libera.</p>
+          <span class="goes">Nell'archivio: <b>Suoni</b></span>
+        </article>
+        <article class="invite club">
+          <span class="slot">Radio Club</span>
+          <h3>Cerchiamo il club.</h3>
+          <p>Il gruppo che fa il podcast: si sceglie un ospite, si preparano le domande, si registra. I ruoli girano e non devi esserci sempre.</p>
+          <a class="goes" href="#radio-club">Come funziona il club ↓</a>
+        </article>
+      </div>
+
+      <div class="steps">
+        <p class="sub">Come partecipare</p>
+        <ol>
+          <li><span><b>Fatti vivo.</b> <span id="step-contact">Lascia il tuo nome allo staff del Barrio's.</span></span></li>
+          <li><span><b>Vieni alla postazione</b>, al primo piano, e scegliamo insieme giorno e ora.</span></li>
+          <li><span><b>Registri o vai in diretta.</b> Poi riascolti e decidi tu se resta in archivio.</span></li>
+        </ol>
+      </div>
+      <p class="staff"><b>Per lo staff:</b> portate il vostro gruppo alla postazione. Bastano gli ultimi dieci minuti di un'attività.</p>
+    </div>
+  </section>
+
+  <section id="come-funziona" class="how" aria-labelledby="h-come">
+    <div class="wrap">
+      <div class="s-head">
+        <h2 class="big" id="h-come">Come funziona</h2>
+        <span class="label">Cinque livelli, scelti da chi parla</span>
+      </div>
+      <div class="mixer" id="mixer"></div>
+      <div class="mixer-cap"><span class="label">0 – 2 non arrivano mai qui</span><span class="label">3 e 4 sono in questa pagina</span></div>
+      <div class="rules">
+        <div><h4>Il numero si sceglie dopo aver riascoltato</h4><p>Nessuno decide prima di sapere com'è venuta. Se nessuno sceglie, la registrazione si cancella.</p></div>
+        <div><h4>Il nome resta sempre</h4><p>Ogni registrazione porta un credito: nome, soprannome o anonimo, come preferisce chi parla. Nelle registrazioni di gruppo vale il livello più basso.</p></div>
+        <div><h4>Si può cambiare idea</h4><p>Chi ha registrato può abbassare il livello o ritirare una registrazione in qualsiasi momento, senza spiegare. La togliamo da qui entro 7 giorni. Quello che è già andato in onda, o è già stato scaricato dalla banca, non si può richiamare.</p></div>
+      </div>
+      <p class="contact" id="contact" hidden></p>
+    </div>
+  </section>
+
+  <section id="progetto" aria-labelledby="h-progetto">
+    <div class="wrap">
+      <div class="s-head">
+        <h2 class="big" id="h-progetto">Il progetto</h2>
+        <span class="label">Una radio di quartiere</span>
+      </div>
+
+      <div class="intro">
+        <p class="lead">NO SIGNAL è la radio di Barrio's. Ragazzi e ragazze registrano le voci, la musica e i suoni della Barona, e decidono loro cosa va in onda.</p>
+        <div class="aside">
+          <p>Il nome viene dallo schermo a LED sulla facciata del Barrio's, che da anni mostra solo due parole: <i>no signal</i>.</p>
+          <p>La radio è una postazione su ruote, costruita con quello che negli anni è rimasto nel seminterrato, e una serie di ricevitori che portano la trasmissione negli altri spazi. È una risorsa del Barrio's: anche altri gruppi possono usarla.</p>
+        </div>
+      </div>
+
+      <div class="pass-wrap" id="radio-club">
+        <div class="pass" aria-label="Tessera del Radio Club NO SIGNAL">
+          <div class="sub2">NO SIGNAL · Barrio's</div>
+          <div class="press">Radio<br>Club</div>
+          <div class="sub2">Tessera · Stagione 2026 – 27</div>
+          <div class="rule"></div>
+          <dl>
+            <dt>Nome</dt><dd class="blank"></dd>
+            <dt>Ci vediamo</dt><dd id="club-when">Alla postazione, primo piano</dd>
+          </dl>
+          <p class="roles-cap">Oggi faccio</p>
+          <ul class="roles">
+            <li><span class="box" aria-hidden="true"></span>L'ospite: lo scelgo e lo studio</li>
+            <li><span class="box" aria-hidden="true"></span>Le domande: le preparo e le faccio</li>
+            <li><span class="box" aria-hidden="true"></span>La registrazione: microfoni e livelli</li>
+          </ul>
+          <p class="roles-foot">I ruoli girano. Non devi esserci sempre.</p>
+        </div>
+
+        <article class="dw" aria-labelledby="h-dw">
+          <span class="label">Un progetto della radio</span>
+          <h3 id="h-dw">Il Radio Club</h3>
+          <p>Il club è il gruppo che fa il podcast di NO SIGNAL: ogni due o tre settimane una puntata con un ospite, sul design e sulla città visti dalla Barona. Ci si trova alla postazione, si sceglie insieme chi intervistare e cosa chiedere, e si registra. Chi viene impara a fare tutto, e nessuno è obbligato a esserci ogni volta.</p>
+          <p>In primavera il club porterà i microfoni fuori dal quartiere: ad aprile 2027 alcuni membri seguiranno la Milano Design Week, per fare alla Design Week le stesse domande che fanno qui.</p>
+          <p class="sub">Una puntata, in cinque parti</p>
+          <div class="format">
+            <div><i>I</i><b>Un posto</b><span>Qualche minuto registrato in un luogo della Barona.</span></div>
+            <div><i>II</i><b>Un oggetto</b><span>Una cosa progettata, descritta per chi non può vederla.</span></div>
+            <div><i>III</i><b>Una lente</b><span>Tre minuti di storia del design, raccontati con parole proprie.</span></div>
+            <div><i>IV</i><b>Una conversazione</b><span>L'ospite della puntata.</span></div>
+            <div><i>V · sempre</i><b>Una domanda fissa</b><span class="q">Il design, per te, di chi è?</span></div>
+          </div>
+          <p class="sub">La stagione</p>
+          <ol class="path">
+            <li><span class="when">Ott – Dic 2026</span><b>Le prime puntate, una ogni due o tre settimane</b></li>
+            <li><span class="when">Gen – Mar 2027</span><b>Altre puntate, e si prepara l'uscita</b></li>
+            <li class="last"><span class="when">Apr 2027</span><b>Il club alla Milano Design Week</b></li>
+          </ol>
+          <div class="feed" id="podcast-links" hidden></div>
+        </article>
+      </div>
+
+      <div class="who">
+        <p class="sub">Chi è coinvolto</p>
+        <div class="who-text">
+          <p>NO SIGNAL nasce al <b>Barrio's</b>, il centro di aggregazione giovanile della Barona, aperto nel 1997 in un edificio del Comune di Milano. Il Barrio's fa capo a due associazioni: <b>Comunità Nuova</b>, che lo gestisce e ne cura i progetti educativi di ogni giorno, e <b>Amici di Edoardo</b>, che lo sostiene e lo finanzia. La radio la fanno i ragazzi e le ragazze della redazione, che a turno scelgono gli ospiti, preparano le domande e registrano.</p>
+          <p>La radio è nata nell'ambito di <b>CIVICITY</b>, un programma di residenze di Nieuwe Instituut, cheFare e Collective Works che invita designer a chiedersi cosa la Design Week porta a Milano e cosa le costa: affitti, inquinamento, disuguaglianze, turismo. Ned, designer in residenza al Barrio's nel 2026, coordina la radio insieme allo staff del Barrio's.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="sig">NO SIGNAL</span>
+    <span class="label">La radio di Barrio's · nell'ambito di CIVICITY</span>
+  </div>
+</footer>
+
+<div class="player" id="player" hidden>
+  <div class="in">
+    <button type="button" class="pbtn" id="p-toggle" aria-label="Pausa">❚❚</button>
+    <div class="pinfo"><div class="ptitle" id="p-title"></div><div class="psub" id="p-sub"></div></div>
+    <div class="pside"><a id="p-open" href="#" target="_blank" rel="noopener" hidden>Apri ↗</a><button type="button" id="p-close" aria-label="Chiudi il lettore">✕</button></div>
+    <div class="pbar" id="p-bar"><span id="p-cur">0:00</span><input type="range" id="p-seek" min="0" max="1000" value="0" aria-label="Posizione"><span id="p-dur">–:––</span></div>
+  </div>
+  <audio id="audio" preload="none"></audio>
+</div>
+
+<script>
+(function(){
+  /* On the live site the archive comes from archive.json, built every hour from AzuraCast.
+     The data block above is only a fallback for when that file can't be read. */
+  var inline;
+  try{ inline = JSON.parse(document.getElementById('archivio').textContent); }catch(e){ inline = {}; }
+  var ARCHIVE_URL = (document.querySelector('meta[name="ns-archive"]')||{}).content || 'archive.json';
+  var ctl = window.AbortController ? new AbortController() : null;
+  var timer = setTimeout(function(){ if(ctl) ctl.abort(); }, 5000);
+  fetch(ARCHIVE_URL, {cache:'no-store', signal: ctl ? ctl.signal : undefined})
+    .then(function(res){ if(!res.ok) throw new Error(res.status); return res.json(); })
+    .then(function(j){ clearTimeout(timer); boot(j && j.raccolte ? j : inline); })
+    .catch(function(){ clearTimeout(timer); boot(inline); });
+
+  function boot(data){
+  var cfg = data.impostazioni || {};
+  var raccolte = (data.raccolte || []).slice().sort(function(a,b){ return a.data < b.data ? 1 : -1; });
+
+  var CATS = {
+    tutto:  {name:'Tutto',  note:'',  empty:'Ancora niente in archivio.'},
+    voci:   {name:'Voci',   note:'<b>Voci.</b> Interviste, conversazioni e racconti: le persone del quartiere, con le loro parole.', empty:'Ancora nessuna voce in archivio.'},
+    musica: {name:'Musica', note:"<b>Musica.</b> Brani di chi suona e canta al Barrio's e in Barona, con il permesso scritto di chi li ha fatti.", empty:'Ancora nessuna musica in archivio.'},
+    suoni:  {name:'Suoni',  note:'<b>Suoni.</b> Gli spazi e le stanze: scale, sottopasso, ascensore, teatro. Senza voci riconoscibili, entrano nella banca sonora libera.', empty:'Ancora nessun suono in archivio.'}
+  };
+  var ORDER = ['tutto','voci','musica','suoni'];
+  var LEVEL_NAMES = {3:'Archivio', 4:'Banca'};
+  var MONTHS = ['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+  var current = 'tutto';
+  try{ var saved = localStorage.getItem('ns-cat'); if(saved && CATS[saved]) current = saved; }catch(e){}
+
+  function el(tag, cls, text){ var n=document.createElement(tag); if(cls) n.className=cls; if(text!=null) n.textContent=text; return n; }
+  function fmtDate(iso){ var p=iso.split('-'); return parseInt(p[2],10)+' '+MONTHS[parseInt(p[1],10)-1]+' '+p[0]; }
+  function isPublic(r){ return (r.livello===3 || r.livello===4) && r.crediti && r.crediti.length>0; }
+  function secs(mmss){ if(!mmss) return 0; var p=String(mmss).split(':').map(Number); return p.length===3 ? p[0]*3600+p[1]*60+p[2] : p[0]*60+(p[1]||0); }
+  function fmt(s){ if(!isFinite(s)||s<0) return '–:––'; s=Math.floor(s); var h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60; return (h? h+':'+(m<10?'0':'') : '')+m+':'+(x<10?'0':'')+x; }
+var FLOOR_CODES = {'1':{code:'1',word:'piano'},'2':{code:'2',word:'piano'},'T':{code:'T',word:'terra'},'S':{code:'S',word:'sotto'},'EST':{code:'EST',word:'esterno'}};
+  function fmtStamp(iso){ var d=new Date(iso); if(isNaN(d)) return ''; var M=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic']; return d.getDate()+' '+M[d.getMonth()]+', '+(d.getHours()<10?'0':'')+d.getHours()+':'+(d.getMinutes()<10?'0':'')+d.getMinutes(); }
+  function floorOf(p){
+    p=(p||'').toLowerCase();
+    var out=p.indexOf('esterno')===0;
+    if(out) return {code:'EST', word:'esterno'};
+    if(p.indexOf('primo piano')===0) return {code:'1', word:'piano'};
+    if(p.indexOf('secondo piano')===0) return {code:'2', word:'piano'};
+    if(p.indexOf('piano terra')===0) return {code:'T', word:'terra'};
+    if(p.indexOf('seminterrato')===0) return {code:'S', word:'sotto'};
+    return null;
+  }
+  function roomDetail(p){ var i=(p||'').indexOf('·'); return i>-1 ? p.slice(i+1).trim() : ''; }
+
+  function meter(level, pub){
+    var m=el('div','meter'+(pub?'':' wait'));
+    var c=el('span','cells'); c.setAttribute('aria-hidden','true');
+    for(var i=0;i<5;i++) c.appendChild(el('i', pub && i<=level ? 'on' : ''));
+    m.appendChild(c);
+    m.appendChild(el('span',null, pub ? level+' · '+LEVEL_NAMES[level] : 'In attesa del consenso'));
+    return m;
+  }
+
+  var tally={tutto:0,voci:0,musica:0,suoni:0}, pubAll=0;
+  raccolte.forEach(function(g){ (g.registrazioni||[]).forEach(function(r){ tally.tutto++; if(tally[r.categoria]!=null) tally[r.categoria]++; if(isPublic(r)) pubAll++; }); });
+  ORDER.forEach(function(k){ var s=document.querySelector('[data-count="'+k+'"]'); if(s) s.textContent=tally[k]+(tally[k]===1?' registrazione':' registrazioni'); });
+  document.getElementById('count').textContent = tally.tutto+' registrazioni · '+pubAll+' pubbliche'+(data.aggiornato ? ' · aggiornato '+fmtStamp(data.aggiornato) : '');
+
+  function render(){
+    var idx=ORDER.indexOf(current);
+    document.querySelectorAll('.stations button').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.cat===current ? 'true':'false'); });
+    document.getElementById('needle').style.left=(12.5+idx*25)+'%';
+    document.getElementById('dial-now').textContent='In ascolto: '+CATS[current].name;
+    var note=document.getElementById('cat-note');
+    note.innerHTML = CATS[current].note; note.hidden = !CATS[current].note;
+
+    var box=document.getElementById('groups'); box.textContent='';
+    var shown=0;
+    raccolte.forEach(function(g){
+      var recs=(g.registrazioni||[]).filter(function(r){ return current==='tutto' || r.categoria===current; });
+      if(!recs.length) return;
+      shown++;
+      var art=el('article','group'); art.id='raccolta-'+g.numero;
+      var head=el('div','group-head');
+      head.appendChild(el('div','group-no',g.numero));
+      var info=el('div');
+      var meta=el('div','group-meta');
+      meta.appendChild(el('span','chip',g.tipo));
+      meta.appendChild(el('span','label',fmtDate(g.data)+' · '+g.luogo));
+      info.appendChild(meta);
+      info.appendChild(el('h3',null,g.titolo));
+      if(g.descrizione) info.appendChild(el('p','group-desc',g.descrizione));
+      var pubRecs=recs.filter(isPublic);
+      var total=pubRecs.reduce(function(s,r){ return s+secs(r.durata); },0);
+      var prog=el('div','progress');
+      var bar=el('span','bar'); var fill=el('i'); fill.style.width=(recs.length? pubRecs.length/recs.length*100 : 0)+'%'; bar.appendChild(fill);
+      prog.appendChild(bar);
+      prog.appendChild(el('span',null, pubRecs.length+' di '+recs.length+' pubblicate'+(total? ' · '+fmt(total)+' da ascoltare' : '')));
+      info.appendChild(prog);
+      head.appendChild(info);
+      art.appendChild(head);
+
+      var log=el('div','log'); log.setAttribute('role','list');
+      recs.forEach(function(r){
+        var ok=isPublic(r);
+        var row=el('div','row'+(ok?'':' pending')); row.setAttribute('role','listitem');
+        row.dataset.key=g.numero+'-'+r.n;
+        row.appendChild(el('span','n',r.n));
+        var f=(r.piano_codice && FLOOR_CODES[r.piano_codice]) || floorOf(r.piano);
+        var fl=el('div','floor'+(f?'':' none'));
+        if(f){ fl.appendChild(el('b',null,f.code)); fl.appendChild(el('span',null,f.word)); fl.setAttribute('title',r.piano); }
+        fl.setAttribute('aria-label', r.piano||'');
+        row.appendChild(fl);
+        var sp=el('div','space',r.spazio||''); var rd=roomDetail(r.piano); if(rd) sp.appendChild(el('span','room',rd)); row.appendChild(sp);
+        var what=el('div','what');
+        what.appendChild(el('p',null,r.titolo));
+        if(ok){
+          var cr=el('div','credit');
+          if(current==='tutto' && CATS[r.categoria]) cr.appendChild(el('span','tag',CATS[r.categoria].name));
+          cr.appendChild(document.createTextNode('Con '+r.crediti.join(', ')));
+          what.appendChild(cr);
+        }
+        row.appendChild(what);
+        var side=el('div','side');
+        side.appendChild(meter(r.livello, ok));
+        if(ok){
+          var act=el('div','actions');
+          if(r.durata) act.appendChild(el('span','dur',r.durata));
+          if(r.audio){
+            var b=el('button','btn play','▶ Ascolta'); b.type='button';
+            b.setAttribute('aria-label','Ascolta: '+r.titolo);
+            b.addEventListener('click',function(){ play({src:r.audio, link:r.link, title:r.titolo, sub:g.numero+' · '+r.n+' · '+r.crediti.join(', '), key:row.dataset.key}); });
+            act.appendChild(b);
+          }
+          if(r.link){
+            var a=el('a','btn','Apri ↗'); a.href=r.link; a.target='_blank'; a.rel='noopener';
+            a.setAttribute('aria-label','Apri su AzuraCast: '+r.titolo); act.appendChild(a);
+          }
+          if(!r.audio && !r.link) act.appendChild(el('span','soon','Audio in arrivo'));
+          side.appendChild(act);
+        }
+        row.appendChild(side);
+        log.appendChild(row);
+      });
+      art.appendChild(log);
+      box.appendChild(art);
+    });
+    if(!shown){
+      var e=el('div','empty');
+      e.appendChild(el('b',null, CATS[current].empty));
+      e.appendChild(el('span',null,'Le registrazioni compaiono qui quando chi parla sceglie il livello 3 o 4.'));
+      box.appendChild(e);
+    }
+    markCurrent();
+  }
+  document.querySelectorAll('.stations button').forEach(function(b){
+    b.addEventListener('click',function(){ current=b.dataset.cat; try{ localStorage.setItem('ns-cat',current); }catch(e){} render(); });
+  });
+
+  /* Mixer */
+  var LV=[
+    {n:0,b:'Cancella',d:'Si cancella prima di lasciare la stanza.',w:'Mai qui'},
+    {n:1,b:'Solo qui',d:'La ascoltiamo insieme oggi, poi si cancella.',w:'Mai qui'},
+    {n:2,b:'In onda',d:'Può andare in onda una volta, non si conserva.',w:'Mai qui'},
+    {n:3,b:'Archivio',d:'La conserviamo e può tornare in onda.',w:'In questa pagina'},
+    {n:4,b:'Banca',d:'Entra nella banca sonora libera: chiunque può usarla.',w:'In questa pagina'}
+  ];
+  var mx=document.getElementById('mixer');
+  LV.forEach(function(l){
+    var ch=el('div','ch '+(l.n>=3?'on':'off'));
+    ch.appendChild(el('span','num',String(l.n)));
+    var st=el('div','stack'); st.setAttribute('aria-hidden','true');
+    for(var i=4;i>=0;i--) st.appendChild(el('i', i<=l.n ? 'lit' : ''));
+    ch.appendChild(st);
+    var t=el('div','txt'); t.appendChild(el('b',null,l.b)); t.appendChild(el('span','d',l.d)); t.appendChild(el('div','w',l.w));
+    ch.appendChild(t);
+    mx.appendChild(ch);
+  });
+
+  /* Ticker */
+  var firstTitle = raccolte[0] ? raccolte[0].titolo+', '+fmtDate(raccolte[0].data) : '';
+  var bits=['NO SIGNAL · la radio di Barrio\'s','Barona, Milano', firstTitle ? 'Ultima trasmissione: '+firstTitle : '', tally.tutto+' registrazioni in archivio', pubAll+' pubbliche', 'Cerchiamo voci, musica e suoni','Cerchiamo il Radio Club','Il design, per te, di chi è?'].filter(Boolean);
+  var tk=document.getElementById('ticker');
+  for(var rep=0;rep<2;rep++) bits.forEach(function(s){ tk.appendChild(el('span',null,s)); });
+
+  /* Partecipa */
+  var part=cfg.partecipa||{};
+  if(part.contatto) document.getElementById('step-contact').textContent=part.contatto+', oppure lascia il tuo nome allo staff del Barrio\'s.';
+  if(part.club_incontro) document.getElementById('club-when').textContent=part.club_incontro;
+
+  /* Settings-driven links */
+  var live=cfg.diretta||{};
+  if(live.stream || live.pagina){
+    var lb=document.getElementById('live-btn'); lb.hidden=false;
+    lb.addEventListener('click',function(){
+      if(live.stream) play({src:live.stream, link:live.pagina, title:'NO SIGNAL · in diretta', sub:'radio.barrios.it', key:'live', live:true});
+      else { var a=document.createElement('a'); a.href=live.pagina; a.target='_blank'; a.rel='noopener'; a.click(); }
+    });
+  }
+  var pod=cfg.podcast||{}, pl=document.getElementById('podcast-links');
+  if(pod.pagina || pod.feed){
+    pl.hidden=false;
+    if(pod.pagina){ var a1=el('a','btn','Tutte le puntate ↗'); a1.href=pod.pagina; a1.target='_blank'; a1.rel='noopener'; pl.appendChild(a1); }
+    if(pod.feed){ var a2=el('a','btn','Feed RSS del podcast ↗'); a2.href=pod.feed; a2.target='_blank'; a2.rel='noopener'; pl.appendChild(a2); }
+  }
+  if(cfg.contatto){ var ct=document.getElementById('contact'); ct.hidden=false; ct.textContent='Per abbassare un livello o ritirare una registrazione: '+cfg.contatto; }
+
+  /* Player */
+  var audio=document.getElementById('audio'), barEl=document.getElementById('player');
+  var tBtn=document.getElementById('p-toggle'), seek=document.getElementById('p-seek');
+  var curEl=document.getElementById('p-cur'), durEl=document.getElementById('p-dur'), openEl=document.getElementById('p-open');
+  var nowKey=null, seeking=false;
+  function play(item){
+    nowKey=item.key;
+    barEl.hidden=false; document.body.classList.add('playing');
+    document.getElementById('p-title').textContent=item.title;
+    var sub=document.getElementById('p-sub'); sub.textContent=item.sub; sub.className='psub';
+    document.getElementById('p-bar').hidden=!!item.live;
+    if(item.link){ openEl.href=item.link; openEl.hidden=false; } else openEl.hidden=true;
+    audio.src=item.src;
+    var p=audio.play(); if(p && p.catch) p.catch(function(){});
+    markCurrent();
+  }
+  function markCurrent(){ document.querySelectorAll('.row').forEach(function(r){ r.classList.toggle('current', r.dataset.key===nowKey); }); }
+  audio.addEventListener('play',function(){ tBtn.textContent='❚❚'; tBtn.setAttribute('aria-label','Pausa'); });
+  audio.addEventListener('pause',function(){ tBtn.textContent='▶'; tBtn.setAttribute('aria-label','Riproduci'); });
+  audio.addEventListener('loadedmetadata',function(){ durEl.textContent=fmt(audio.duration); });
+  audio.addEventListener('timeupdate',function(){ curEl.textContent=fmt(audio.currentTime); if(!seeking && audio.duration) seek.value=Math.round(audio.currentTime/audio.duration*1000); });
+  audio.addEventListener('error',function(){
+    if(!audio.getAttribute('src')) return;
+    var sub=document.getElementById('p-sub'); sub.className='psub perr';
+    sub.textContent = openEl.hidden ? "Questo audio non si apre qui." : "Questo audio non si apre qui: usa «Apri ↗».";
+  });
+  tBtn.addEventListener('click',function(){ if(audio.paused){ var p=audio.play(); if(p&&p.catch) p.catch(function(){}); } else audio.pause(); });
+  seek.addEventListener('input',function(){ seeking=true; if(audio.duration) curEl.textContent=fmt(seek.value/1000*audio.duration); });
+  seek.addEventListener('change',function(){ if(audio.duration) audio.currentTime=seek.value/1000*audio.duration; seeking=false; });
+  document.getElementById('p-close').addEventListener('click',function(){ audio.pause(); audio.removeAttribute('src'); audio.load(); barEl.hidden=true; document.body.classList.remove('playing'); nowKey=null; markCurrent(); });
+
+  render();
+
+  /* ---------- LED facade: static that tunes in ---------- */
+  var G={
+    N:['10001','11001','10101','10011','10001','10001','10001'],
+    O:['01110','10001','10001','10001','10001','10001','01110'],
+    S:['01111','10000','10000','01110','00001','00001','11110'],
+    I:['01110','00100','00100','00100','00100','00100','01110'],
+    G:['01110','10001','10000','10111','10001','10001','01111'],
+    A:['01110','10001','10001','11111','10001','10001','10001'],
+    L:['10000','10000','10000','10000','10000','10000','11111'],
+    ' ':['000','000','000','000','000','000','000']
+  };
+  var ROWS=9, text='NO SIGNAL', cols=[[],[]];
+  function blank(){ var c=[]; for(var y=0;y<ROWS;y++) c.push(false); return c; }
+  cols=[blank()];
+  for(var k=0;k<text.length;k++){
+    var gl=G[text[k]];
+    for(var x=0;x<gl[0].length;x++){ var col=[false]; for(var y=0;y<7;y++) col.push(gl[y][x]==='1'); col.push(false); cols.push(col); }
+    if(k<text.length-1) cols.push(blank());
+  }
+  cols.push(blank());
+  var W=cols.length;
+  var canvas=document.getElementById('led'), ctx=canvas.getContext('2d');
+  var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var noise=reduce?0:1, t0=null, flick=-1, burst=0;
+  function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+  var ON=css('--signal')||'#ff5a1f', OFF=css('--led-off')||'#331609';
+  function draw(){
+    var w=canvas.clientWidth||600, dpr=window.devicePixelRatio||1;
+    var pitch=w/W, h=Math.round(pitch*ROWS);
+    if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){ canvas.width=Math.round(w*dpr); canvas.height=Math.round(h*dpr); canvas.style.height=h+'px'; }
+    ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,w,h);
+    var r=pitch*0.37, n=Math.max(noise,burst);
+    for(var cx=0;cx<W;cx++) for(var cy=0;cy<ROWS;cy++){
+      var on=cols[cx][cy] && cx!==flick;
+      if(n>0){ var rnd=Math.random(); on = rnd < n*0.45 ? Math.random()<0.5 : on && rnd > n*0.9; }
+      ctx.fillStyle=on?ON:OFF;
+      ctx.globalAlpha = on ? 1 : 0.9;
+      ctx.beginPath(); ctx.arc(cx*pitch+pitch/2, cy*pitch+pitch/2, r, 0, Math.PI*2); ctx.fill();
+    }
+    ctx.globalAlpha=1;
+  }
+  draw(); window.addEventListener('resize', draw);
+  if(!reduce){
+    var D=1400;
+    (function tune(ts){
+      if(t0===null) t0=ts;
+      var p=Math.min(1,(ts-t0)/D);
+      noise=1-p*p; draw();
+      if(p<1) requestAnimationFrame(tune); else { noise=0; draw(); idle(); }
+    })(performance.now());
+  }
+  function idle(){
+    setInterval(function(){
+      var r=Math.random();
+      if(r<0.12){
+        var f=0; burst=0.5;
+        (function b(){ f++; burst=Math.max(0,0.5-f*0.08); draw(); if(burst>0) requestAnimationFrame(b); })();
+      } else if(r<0.45){
+        flick=Math.floor(Math.random()*W); draw();
+        setTimeout(function(){ flick=-1; draw(); }, 90+Math.random()*120);
+      }
+    }, 1800);
+  }
+  }
+})();
+</script>
+
+</body>
+</html>

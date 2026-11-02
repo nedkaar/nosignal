@@ -1,0 +1,166 @@
+{
+  "_leggimi": "Edit this file to change settings, feeds and collections. Recordings themselves come from AzuraCast. See README.md.",
+  "impostazioni": {
+    "diretta": {
+      "stream": null,
+      "pagina": null
+    },
+    "podcast": {
+      "pagina": null,
+      "feed": null
+    },
+    "contatto": null,
+    "partecipa": {
+      "contatto": null,
+      "club_incontro": null
+    }
+  },
+  "feed": [
+    {
+      "categoria": "voci",
+      "url": "",
+      "tipo_predefinito": "Trasmissione dal vivo"
+    },
+    {
+      "categoria": "musica",
+      "url": "",
+      "tipo_predefinito": "Trasmissione dal vivo"
+    },
+    {
+      "categoria": "suoni",
+      "url": "",
+      "tipo_predefinito": "Banca sonora"
+    },
+    {
+      "categoria": "voci",
+      "url": "",
+      "tipo_predefinito": "Puntata",
+      "_nota": "Radio Club podcast"
+    }
+  ],
+  "raccolte": [
+    {
+      "numero": "00",
+      "tipo": "Trasmissione dal vivo",
+      "tipo_en": "Live broadcast",
+      "titolo": "La prima trasmissione",
+      "titolo_en": "The first broadcast",
+      "data": "2026-10-02",
+      "luogo": "Barrio's, Barona",
+      "descrizione": "Una sola trasmissione ha accompagnato una visita a piedi del Barrio's, dalla postazione al primo piano fino agli spazi all'esterno. In ogni spazio un ricevitore suonava quello che c'era da sentire: storie, registrazioni, musica del quartiere, e silenzio dove una stanza è chiusa.",
+      "descrizione_en": "A single broadcast accompanied a walking tour of Barrio's, from the radio station on the first floor out to the spaces outside. In each space a receiver played what there was to hear: stories, recordings, music from the neighbourhood, and silence where a room is closed.",
+      "segnaposto": [
+        {
+          "n": "1A",
+          "categoria": "voci",
+          "spazio": "NO SIGNAL",
+          "spazio_en": "NO SIGNAL",
+          "piano": "Primo piano · postazione radio",
+          "piano_en": "First floor · radio station",
+          "titolo": "Un'intervista su un progetto in arrivo al Barrio's a fine ottobre",
+          "titolo_en": "An interview about a project coming to Barrio's at the end of October"
+        },
+        {
+          "n": "1B",
+          "categoria": "voci",
+          "spazio": "NO SIGNAL",
+          "spazio_en": "NO SIGNAL",
+          "piano": "Primo piano · postazione radio",
+          "piano_en": "First floor · radio station",
+          "titolo": "Un'intervista sulla storia della Barona",
+          "titolo_en": "An interview about the history of the Barona"
+        },
+        {
+          "n": "1C",
+          "categoria": "voci",
+          "spazio": "NO SIGNAL",
+          "spazio_en": "NO SIGNAL",
+          "piano": "Primo piano · postazione radio",
+          "piano_en": "First floor · radio station",
+          "titolo": "Due voci parlano della Barona, prima parte",
+          "titolo_en": "Two voices talk about the Barona, part one"
+        },
+        {
+          "n": "1D",
+          "categoria": "voci",
+          "spazio": "NO SIGNAL",
+          "spazio_en": "NO SIGNAL",
+          "piano": "Primo piano · postazione radio",
+          "piano_en": "First floor · radio station",
+          "titolo": "Due voci parlano della Barona, seconda parte",
+          "titolo_en": "Two voices talk about the Barona, part two"
+        },
+        {
+          "n": "2",
+          "categoria": "voci",
+          "spazio": "Ufficio",
+          "spazio_en": "Office",
+          "piano": "Primo piano",
+          "piano_en": "First floor",
+          "titolo": "Il lavoro del Barrio's, raccontato da chi lo fa",
+          "titolo_en": "The work of Barrio's, told by the people who do it"
+        },
+        {
+          "n": "3",
+          "categoria": "voci",
+          "spazio": "Doposcuola",
+          "spazio_en": "After-school",
+          "piano": "Primo piano",
+          "piano_en": "First floor",
+          "titolo": "Il primo giorno di doposcuola",
+          "titolo_en": "The first day of after-school"
+        },
+        {
+          "n": "4",
+          "categoria": "suoni",
+          "spazio": "Studio",
+          "spazio_en": "Studio",
+          "piano": "Piano terra",
+          "piano_en": "Ground floor",
+          "titolo": "Lo studio di registrazione, chiuso durante la visita ma attivo",
+          "titolo_en": "The recording studio, closed for the tour but in use"
+        },
+        {
+          "n": "5",
+          "categoria": "voci",
+          "spazio": "Murales",
+          "spazio_en": "Murals",
+          "piano": "Esterno · piano terra",
+          "piano_en": "Outside · ground floor",
+          "titolo": "Un'introduzione ai murales di Piazza delle Donne Partigiane",
+          "titolo_en": "An introduction to the murals of Piazza delle Donne Partigiane"
+        },
+        {
+          "n": "6",
+          "categoria": "voci",
+          "spazio": "Sala Prove",
+          "spazio_en": "Rehearsal room",
+          "piano": "Esterno · primo piano, su per la rampa",
+          "piano_en": "Outside · first floor, up the ramp",
+          "titolo": "La classe di italiano L2 lavora sull'intonazione con l'attrezzatura della radio",
+          "titolo_en": "The Italian as a second language class practises intonation with the radio equipment"
+        },
+        {
+          "n": "7",
+          "categoria": "suoni",
+          "spazio": "Teatro",
+          "spazio_en": "Theatre",
+          "piano": "Esterno · piano terra",
+          "piano_en": "Outside · ground floor",
+          "titolo": "Il teatro chiuso, in attesa della ristrutturazione",
+          "titolo_en": "The closed theatre, waiting for renovation"
+        },
+        {
+          "n": "8",
+          "categoria": "voci",
+          "spazio": "Barrio's Live",
+          "spazio_en": "Barrio's Live",
+          "piano": "Esterno · piano terra",
+          "piano_en": "Outside · ground floor",
+          "titolo": "Hip hop e il lavoro della cooperativa Barrio's Live",
+          "titolo_en": "Hip hop and the work of the Barrio's Live cooperative"
+        }
+      ]
+    }
+  ]
+}
