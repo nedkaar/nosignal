@@ -18,7 +18,7 @@
   "feed": [
     {
       "categoria": "voci",
-      "url": "",
+      "url": "https://radio.barrios.it/public/2/podcast/1f1d6bf5-ba6f-6722-b73d-11351570d5a9/feed",
       "tipo_predefinito": "Trasmissione dal vivo"
     },
     {
@@ -28,7 +28,7 @@
     },
     {
       "categoria": "suoni",
-      "url": "",
+      "url": "https://radio.barrios.it/public/2/podcast/1f1d6bf7-de82-6018-a424-852b4a1def14/feed",
       "tipo_predefinito": "Banca sonora"
     },
     {
