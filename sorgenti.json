@@ -50,8 +50,8 @@
       "descrizione": "Una sola trasmissione ha accompagnato una visita a piedi del Barrio's, dalla postazione al primo piano fino agli spazi all'esterno. In ogni spazio un ricevitore suonava quello che c'era da sentire: storie, registrazioni, musica del quartiere, e silenzio dove una stanza è chiusa.",
       "descrizione_en": "A single broadcast accompanied a walking tour of Barrio's, from the radio station on the first floor out to the spaces outside. In each space a receiver played what there was to hear: stories, recordings, music from the neighbourhood, and silence where a room is closed.",
       "segnaposto": [
-        {"n": "2", "categoria": "voci", "spazio": "Barrio's", "piano": "Primo piano", "titolo": "Diala e Fatima parlano della vita a Barona e della sua reputazione", "livello": 2}
-        {"n": "3", "categoria": "voci", "spazio": "Barrio's", "piano": "Primo piano", "titolo": "Diala e Fatima rispondono alle domande di Ned", "livello": 2}
+        {"n": "2", "categoria": "voci", "spazio": "Barrio's", "piano": "Primo piano", "titolo": "Diala e Fatima parlano della vita a Barona e della sua reputazione", "livello": 2},
+        {"n": "3", "categoria": "voci", "spazio": "Barrio's", "piano": "Primo piano", "titolo": "Diala e Fatima rispondono alle domande di Ned", "livello": 2},
         {"n": "4", "categoria": "voci", "spazio": "Barrio's", "piano": "Diala e Fatima parlano della vita a Barona e della sua reputazione", "livello": 2}
       ]
     }
