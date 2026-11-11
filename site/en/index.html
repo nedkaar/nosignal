@@ -155,6 +155,11 @@ section{padding-block:72px}
 .cells i{width:6px;display:block;background:var(--line)}
 .cells i:nth-child(1){height:5px}.cells i:nth-child(2){height:7px}.cells i:nth-child(3){height:9px}.cells i:nth-child(4){height:11px}.cells i:nth-child(5){height:13px}
 .cells i.on{background:var(--signal)}
+.row.closed{background:repeating-linear-gradient(135deg,transparent 0 9px,color-mix(in srgb,var(--line) 45%,transparent) 9px 10px)}
+.row.closed .floor{opacity:.35}
+.row.closed .what p{color:var(--pending)}
+.closed-note{font-family:var(--mono);font-size:11.5px;color:var(--pending);margin-top:4px}
+.meter.closed .cells i.on{background:var(--pending)}
 .meter.wait .cells i{background:none;outline:1px dashed var(--pending);outline-offset:-1px}
 
 .empty{border:1px dashed var(--line);padding:32px;color:var(--muted);display:grid;gap:4px;border-radius:4px}
@@ -284,6 +289,13 @@ footer .label{color:var(--led-text)}
 .pside{display:flex;gap:8px;align-items:center}
 .pside a,.pside button{font-family:var(--mono);font-size:12px;color:#f3e9e1;background:none;border:1px solid #5a4a3f;border-radius:2px;padding:4px 10px;text-decoration:none;white-space:nowrap}
 .perr{color:var(--signal)}
+/* ---------- Headings in Terminal Grotesque (Velvetyne, SIL Open Font License) ---------- */
+@font-face{font-family:"Terminal Grotesque";font-display:swap;
+  src:url("../fonts/terminal-grotesque.woff2") format("woff2"),url("../fonts/terminal-grotesque.ttf") format("truetype"),url("../fonts/terminal-grotesque.otf") format("opentype")}
+:root{--head:"Terminal Grotesque","Archivo",ui-sans-serif,system-ui,sans-serif}
+.big,.group h3,.invite h3,.dw h3,.pass .press,.rules h4,.stations .st{font-family:var(--head);font-stretch:normal;font-variation-settings:normal;font-weight:400;letter-spacing:0}
+.thesis h1{font-size:clamp(38px,7vw,96px)}
+.s-head h2{font-size:clamp(44px,8.5vw,120px)}
 </style>
 </head>
 <body>
@@ -451,7 +463,7 @@ footer .label{color:var(--led-text)}
         <span class="label">Five levels, chosen by the person speaking</span>
       </div>
       <div class="mixer" id="mixer"></div>
-      <div class="mixer-cap"><span class="label">0 – 2 never reach this page</span><span class="label">3 and 4 are on this page</span></div>
+      <div class="mixer-cap"><span class="label">0 and 1 never reach this page · 2 appears greyed out, with no audio or names</span><span class="label">3 and 4 can be heard here</span></div>
       <div class="rules">
         <div><h4>The number is chosen after listening back</h4><p>Nobody decides before they know how it turned out. If nobody chooses, the recording is deleted.</p></div>
         <div><h4>The credit always stays</h4><p>Every recording carries a credit: name, nickname or anonymous, as the speaker prefers. In group recordings, the lowest level applies.</p></div>
@@ -577,7 +589,7 @@ footer .label{color:var(--led-text)}
     suoni:  {name:'Sounds', note:'<b>Sounds.</b> Spaces and rooms: stairs, underpass, lift, theatre. With no recognisable voices, they go into the free soundbank.', empty:'No sounds in the archive yet.'}
   };
   var ORDER = ['tutto','voci','musica','suoni'];
-  var LEVEL_NAMES = {3:'Archive', 4:'Bank'};
+  var LEVEL_NAMES = {1:'Here only', 2:'Aired once', 3:'Archive', 4:'Bank'};
   var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   var current = 'tutto';
   try{ var saved = localStorage.getItem('ns-cat-en'); if(saved && CATS[saved]) current = saved; }catch(e){}
@@ -601,17 +613,19 @@ var FLOOR_CODES = {'1':{code:'1',word:'floor'},'2':{code:'2',word:'floor'},'T':{
   }
   function roomDetail(p){ var i=(p||'').indexOf('·'); return i>-1 ? p.slice(i+1).trim() : ''; }
 
+  function isClosed(r){ return r.livello===2; }
   function meter(level, pub){
-    var m=el('div','meter'+(pub?'':' wait'));
+    var closed=!pub && level===2;
+    var m=el('div','meter'+(pub?'':(closed?' closed':' wait')));
     var c=el('span','cells'); c.setAttribute('aria-hidden','true');
-    for(var i=0;i<5;i++) c.appendChild(el('i', pub && i<=level ? 'on' : ''));
+    for(var i=0;i<5;i++) c.appendChild(el('i', (pub||closed) && i<=level ? 'on' : ''));
     m.appendChild(c);
-    m.appendChild(el('span',null, pub ? level+' · '+LEVEL_NAMES[level] : 'Awaiting consent'));
+    m.appendChild(el('span',null, (pub||closed) ? level+' · '+LEVEL_NAMES[level] : 'Awaiting consent'));
     return m;
   }
 
   var tally={tutto:0,voci:0,musica:0,suoni:0}, pubAll=0;
-  raccolte.forEach(function(g){ (g.registrazioni||[]).forEach(function(r){ tally.tutto++; if(tally[r.categoria]!=null) tally[r.categoria]++; if(isPublic(r)) pubAll++; }); });
+  raccolte.forEach(function(g){ (g.registrazioni||[]).forEach(function(r){ if(r.livello===0 || r.livello===1) return; tally.tutto++; if(tally[r.categoria]!=null) tally[r.categoria]++; if(isPublic(r)) pubAll++; }); });
   ORDER.forEach(function(k){ var s=document.querySelector('[data-count="'+k+'"]'); if(s) s.textContent=tally[k]+(tally[k]===1?' recording':' recordings'); });
   document.getElementById('count').textContent = tally.tutto+' recordings · '+pubAll+' public'+(data.aggiornato ? ' · updated '+fmtStamp(data.aggiornato) : '');
 
@@ -626,7 +640,7 @@ var FLOOR_CODES = {'1':{code:'1',word:'floor'},'2':{code:'2',word:'floor'},'T':{
     var box=document.getElementById('groups'); box.textContent='';
     var shown=0;
     raccolte.forEach(function(g){
-      var recs=(g.registrazioni||[]).filter(function(r){ return current==='tutto' || r.categoria===current; });
+      var recs=(g.registrazioni||[]).filter(function(r){ return r.livello!==0 && r.livello!==1 && (current==='tutto' || r.categoria===current); });
       if(!recs.length) return;
       shown++;
       var art=el('article','group'); art.id='raccolta-'+g.numero;
@@ -652,7 +666,8 @@ var FLOOR_CODES = {'1':{code:'1',word:'floor'},'2':{code:'2',word:'floor'},'T':{
       var log=el('div','log'); log.setAttribute('role','list');
       recs.forEach(function(r){
         var ok=isPublic(r);
-        var row=el('div','row'+(ok?'':' pending')); row.setAttribute('role','listitem');
+        var shut=!ok && isClosed(r);
+        var row=el('div','row'+(ok?'':' pending')+(shut?' closed':'')); row.setAttribute('role','listitem');
         row.dataset.key=g.numero+'-'+r.n;
         row.appendChild(el('span','n',r.n));
         var f=(r.piano_codice && FLOOR_CODES[r.piano_codice]) || floorOf(r.piano);
@@ -663,6 +678,7 @@ var FLOOR_CODES = {'1':{code:'1',word:'floor'},'2':{code:'2',word:'floor'},'T':{
         var sp=el('div','space',r.spazio||''); var rd=roomDetail(r.piano); if(rd) sp.appendChild(el('span','room',rd)); row.appendChild(sp);
         var what=el('div','what');
         what.appendChild(el('p',null,r.titolo));
+        if(shut) what.appendChild(el('div','closed-note', 'Not available: it was broadcast once and not kept.'));
         if(ok){
           var cr=el('div','credit');
           if(current==='tutto' && CATS[r.categoria]) cr.appendChild(el('span','tag',CATS[r.categoria].name));
@@ -710,7 +726,7 @@ var FLOOR_CODES = {'1':{code:'1',word:'floor'},'2':{code:'2',word:'floor'},'T':{
   var LV=[
     {n:0,b:'Delete',d:'Erased before you leave the room.',w:'Never here'},
     {n:1,b:'Here only',d:'We listen together today, then it is erased.',w:'Never here'},
-    {n:2,b:'On air',d:'Can be broadcast once, not kept.',w:'Never here'},
+    {n:2,b:'On air',d:'Can be broadcast once, not kept.',w:'Greyed out here, no audio'},
     {n:3,b:'Archive',d:'We keep it, and it can be aired again.',w:'On this page'},
     {n:4,b:'Bank',d:'Goes into the free soundbank: anyone can use it.',w:'On this page'}
   ];
