@@ -156,6 +156,14 @@ def read_feed(feed):
         problems = []
         if "livello" not in f:
             problems.append("no 'Livello:' line")
+        elif level == 2:
+            problems.append(
+                "'Livello: 2' must not be published in AzuraCast: its audio is public in the feed. "
+                "Unpublish or delete it there, and list it in sorgenti.json under 'segnaposto' with "
+                "\"livello\": 2 so it shows greyed out")
+        elif level in (0, 1) and "livello" in f and re.sub(r"\D", "", f["livello"]):
+            problems.append(
+                f"'Livello: {level}' recordings are never kept or shown. Delete it from AzuraCast")
         elif level not in (3, 4):
             problems.append(f"'Livello: {f['livello']}' is not 3 or 4")
         if not credits:
@@ -239,7 +247,13 @@ def main(src_path, out_path):
         for p in g.pop("segnaposto", []) or []:
             if str(p.get("n")) in have:
                 continue
-            p = dict(p, crediti=[], livello=None, durata=None, audio=None, link=None)
+            # Level 2 shows greyed out as "not available"; levels 0 and 1 don't show at all;
+            # anything else waits for consent. Never names, audio or links: those are only for 3 and 4.
+            lv = p.get("livello")
+            if lv in (0, 1):
+                continue
+            p = dict(p, crediti=[], livello=2 if lv == 2 else None,
+                     durata=None, audio=None, link=None)
             p.setdefault("piano_codice", floor_code(p.get("piano")))
             waiting.append(p)
         rows = published + waiting
