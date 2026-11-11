@@ -53,7 +53,7 @@
         {"n": "2", "categoria": "voci", "spazio": "Barrio's", "piano": "Primo piano", "titolo": "Diala e Fatima parlano della vita a Barona e della sua reputazione", "livello": 2},
         {"n": "3", "categoria": "voci", "spazio": "Barrio's", "piano": "Primo piano", "titolo": "Diala e Fatima rispondono alle domande di Ned", "livello": 2},
         {"n": "4", "categoria": "voci", "spazio": "Barrio's", "piano": "Primo piano", "titolo": "Diala e Fatima parlano della vita a Barona e della sua reputazione", "livello": 2},
-        {"n": "7", "categoria": "voci", "spazio": "Barrio's", "piano": "Piano terra", "titolo": "Lo studio di registrazione, chiuso ma attivo", "livello": 2}
+        {"n": "7", "categoria": "voci", "spazio": "Studio", "piano": "Piano terra", "titolo": "Lo studio di registrazione, chiuso ma attivo", "livello": 2}
       ]
     }
   ]
