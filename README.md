@@ -162,6 +162,17 @@ Add a collection to `"raccolte"` in `sorgenti.json`:
 
 **Waiting rows (`segnaposto`).** A collection can list rows that are recorded but don't have consent yet. They show greyed out as "In attesa del consenso", without names. When an episode with the same `N:` is published, it takes that row's place. The first broadcast already has its 11 rows set up this way.
 
+**Level 2 (aired once, not available).** A level 2 recording went on air once and isn't kept, so it must **not** be uploaded or left published in AzuraCast: anything in a public feed can be downloaded. To show it on the page as greyed out and unavailable for relistening, add `"livello": 2` to its row under `segnaposto`:
+
+```json
+{"n": "2", "categoria": "voci", "spazio": "Ufficio", "piano": "Primo piano",
+ "titolo": "Il lavoro del Barrio's, raccontato da chi lo fa", "livello": 2}
+```
+
+The page shows the title, the space and "2 · In onda una volta", with a hatched grey background and "Non disponibile: è andata in onda una volta e non è stata conservata". Names, audio and links never appear for these rows. If a level 2 episode does turn up in an AzuraCast feed, the update leaves it out and the log says to unpublish it.
+
+**Levels 0 and 1 never appear.** They were never broadcast, so they leave no trace on the page. If a row under `segnaposto` is set to `"livello": 0` or `"livello": 1`, it is removed from the page. If such an episode is in AzuraCast, the log says to delete it.
+
 ## Troubleshooting
 
 - **The run is red.** Open it. "FAILED" next to a feed means AzuraCast couldn't be reached or the link is wrong. The site keeps its last version until the next good run.
