@@ -155,6 +155,11 @@ section{padding-block:72px}
 .cells i{width:6px;display:block;background:var(--line)}
 .cells i:nth-child(1){height:5px}.cells i:nth-child(2){height:7px}.cells i:nth-child(3){height:9px}.cells i:nth-child(4){height:11px}.cells i:nth-child(5){height:13px}
 .cells i.on{background:var(--signal)}
+.row.closed{background:repeating-linear-gradient(135deg,transparent 0 9px,color-mix(in srgb,var(--line) 45%,transparent) 9px 10px)}
+.row.closed .floor{opacity:.35}
+.row.closed .what p{color:var(--pending)}
+.closed-note{font-family:var(--mono);font-size:11.5px;color:var(--pending);margin-top:4px}
+.meter.closed .cells i.on{background:var(--pending)}
 .meter.wait .cells i{background:none;outline:1px dashed var(--pending);outline-offset:-1px}
 
 .empty{border:1px dashed var(--line);padding:32px;color:var(--muted);display:grid;gap:4px;border-radius:4px}
@@ -284,14 +289,13 @@ footer .label{color:var(--led-text)}
 .pside{display:flex;gap:8px;align-items:center}
 .pside a,.pside button{font-family:var(--mono);font-size:12px;color:#f3e9e1;background:none;border:1px solid #5a4a3f;border-radius:2px;padding:4px 10px;text-decoration:none;white-space:nowrap}
 .perr{color:var(--signal)}
-
+/* ---------- Headings in Terminal Grotesque (Velvetyne, SIL Open Font License) ---------- */
 @font-face{font-family:"Terminal Grotesque";font-display:swap;
-  src:url("fonts/terminal-grotesque.ttf") format("truetype")}
+  src:url("fonts/terminal-grotesque.woff2") format("woff2"),url("fonts/terminal-grotesque.ttf") format("truetype"),url("fonts/terminal-grotesque.otf") format("opentype")}
 :root{--head:"Terminal Grotesque","Archivo",ui-sans-serif,system-ui,sans-serif}
 .big,.group h3,.invite h3,.dw h3,.pass .press,.rules h4,.stations .st{font-family:var(--head);font-stretch:normal;font-variation-settings:normal;font-weight:400;letter-spacing:0}
 .thesis h1{font-size:clamp(38px,7vw,96px)}
 .s-head h2{font-size:clamp(44px,8.5vw,120px)}
-
 </style>
 </head>
 <body>
@@ -339,6 +343,17 @@ footer .label{color:var(--led-text)}
       "luogo": "Barrio's, Barona",
       "descrizione": "Una sola trasmissione ha accompagnato una visita a piedi del Barrio's, dalla postazione al primo piano fino agli spazi all'esterno. In ogni spazio un ricevitore suonava quello che c'era da sentire: storie, registrazioni, musica del quartiere, e silenzio dove una stanza è chiusa.",
       "registrazioni": [
+        {"n":"1A","categoria":"voci","spazio":"NO SIGNAL","piano":"Primo piano · postazione radio","titolo":"Un'intervista su un progetto in arrivo al Barrio's a fine ottobre","crediti":[],"livello":null,"durata":null,"audio":null,"link":null,"fonte":"LIVE"},
+        {"n":"1B","categoria":"voci","spazio":"NO SIGNAL","piano":"Primo piano · postazione radio","titolo":"Un'intervista sulla storia della Barona","crediti":[],"livello":null,"durata":null,"audio":null,"link":null,"fonte":"LIVE"},
+        {"n":"1C","categoria":"voci","spazio":"NO SIGNAL","piano":"Primo piano · postazione radio","titolo":"Due voci parlano della Barona, prima parte","crediti":[],"livello":null,"durata":null,"audio":null,"link":null,"fonte":"LIVE"},
+        {"n":"1D","categoria":"voci","spazio":"NO SIGNAL","piano":"Primo piano · postazione radio","titolo":"Due voci parlano della Barona, seconda parte","crediti":[],"livello":null,"durata":null,"audio":null,"link":null,"fonte":"LIVE"},
+        {"n":"2","categoria":"voci","spazio":"Ufficio","piano":"Primo piano","titolo":"Il lavoro del Barrio's, raccontato da chi lo fa","crediti":[],"livello":null,"durata":null,"audio":null,"link":null,"fonte":"LIVE"},
+        {"n":"3","categoria":"voci","spazio":"Doposcuola","piano":"Primo piano","titolo":"Il primo giorno di doposcuola","crediti":[],"livello":null,"durata":null,"audio":null,"link":null,"fonte":"LIVE"},
+        {"n":"4","categoria":"suoni","spazio":"Studio","piano":"Piano terra","titolo":"Lo studio di registrazione, chiuso durante la visita ma attivo","crediti":[],"livello":null,"durata":null,"audio":null,"link":null,"fonte":"LIVE"},
+        {"n":"5","categoria":"voci","spazio":"Murales","piano":"Esterno · piano terra","titolo":"Un'introduzione ai murales di Piazza delle Donne Partigiane","crediti":[],"livello":null,"durata":null,"audio":null,"link":null,"fonte":"LIVE"},
+        {"n":"6","categoria":"voci","spazio":"Sala Prove","piano":"Esterno · primo piano, su per la rampa","titolo":"La classe di italiano L2 lavora sull'intonazione con l'attrezzatura della radio","crediti":[],"livello":null,"durata":null,"audio":null,"link":null,"fonte":"LIVE"},
+        {"n":"7","categoria":"suoni","spazio":"Teatro","piano":"Esterno · piano terra","titolo":"Il teatro chiuso, in attesa della ristrutturazione","crediti":[],"livello":null,"durata":null,"audio":null,"link":null,"fonte":"LIVE"},
+        {"n":"8","categoria":"voci","spazio":"Barrio's Live","piano":"Esterno · piano terra","titolo":"Hip hop e il lavoro della cooperativa Barrio's Live","crediti":[],"livello":null,"durata":null,"audio":null,"link":null,"fonte":"LIVE"}
       ]
     }
   ]
@@ -448,7 +463,7 @@ footer .label{color:var(--led-text)}
         <span class="label">Cinque livelli, scelti da chi parla</span>
       </div>
       <div class="mixer" id="mixer"></div>
-      <div class="mixer-cap"><span class="label">0 – 2 non arrivano mai qui</span><span class="label">3 e 4 sono in questa pagina</span></div>
+      <div class="mixer-cap"><span class="label">0 e 1 non arrivano mai qui · 2 compare in grigio, senza audio né nomi</span><span class="label">3 e 4 si ascoltano qui</span></div>
       <div class="rules">
         <div><h4>Il numero si sceglie dopo aver riascoltato</h4><p>Nessuno decide prima di sapere com'è venuta. Se nessuno sceglie, la registrazione si cancella.</p></div>
         <div><h4>Il nome resta sempre</h4><p>Ogni registrazione porta un credito: nome, soprannome o anonimo, come preferisce chi parla. Nelle registrazioni di gruppo vale il livello più basso.</p></div>
@@ -518,8 +533,8 @@ footer .label{color:var(--led-text)}
       <div class="who">
         <p class="sub">Chi è coinvolto</p>
         <div class="who-text">
-          <p>NO SIGNAL nasce al <b><a href="https://www.barrios.it">Barrio's</a></b>, il centro di aggregazione giovanile della Barona, aperto nel 1997 in un edificio del Comune di Milano. Il Barrio's fa capo a due associazioni: <b><a href="https://www.comunitanuova.it/">Comunità Nuova</a></b>, che lo gestisce e ne cura i progetti educativi di ogni giorno, e <b><a href="http://www.amicidiedoardo.org/">Amici di Edoardo</a></b>, che lo sostiene e lo finanzia. La radio la fanno i ragazzi e le ragazze della redazione, che a turno scelgono gli ospiti, preparano le domande e registrano.</p>
-          <p>La radio è nata nell'ambito di <b>CIVICITY</b> - un programma di residenze di <a href="https://nieuweinstituut.nl/">Nieuwe Instituut</a> e <a href="https://www.che-fare.com/">cheFare</a> a cura di <a href="https://collectiveworks.nl/">Collective Works</a> - che invita designer a chiedersi cosa la Design Week porta a Milano e cosa le costa: affitti, inquinamento, disuguaglianze, turismo. <a href="https://www.nedkaar.com">Ned Kaar</a>, designer in residenza al Barrio's nel 2026/2027, coordina la radio insieme allo staff del Barrio's.</p>
+          <p>NO SIGNAL nasce al <b>Barrio's</b>, il centro di aggregazione giovanile della Barona, aperto nel 1997 in un edificio del Comune di Milano. Il Barrio's fa capo a due associazioni: <b>Comunità Nuova</b>, che lo gestisce e ne cura i progetti educativi di ogni giorno, e <b>Amici di Edoardo</b>, che lo sostiene e lo finanzia. La radio la fanno i ragazzi e le ragazze della redazione, che a turno scelgono gli ospiti, preparano le domande e registrano.</p>
+          <p>La radio è nata nell'ambito di <b>CIVICITY</b>, un programma di residenze di Nieuwe Instituut, cheFare e Collective Works che invita designer a chiedersi cosa la Design Week porta a Milano e cosa le costa: affitti, inquinamento, disuguaglianze, turismo. Ned, designer in residenza al Barrio's nel 2026, coordina la radio insieme allo staff del Barrio's.</p>
         </div>
       </div>
     </div>
@@ -568,7 +583,7 @@ footer .label{color:var(--led-text)}
     suoni:  {name:'Suoni',  note:'<b>Suoni.</b> Gli spazi e le stanze: scale, sottopasso, ascensore, teatro. Senza voci riconoscibili, entrano nella banca sonora libera.', empty:'Ancora nessun suono in archivio.'}
   };
   var ORDER = ['tutto','voci','musica','suoni'];
-  var LEVEL_NAMES = {3:'Archivio', 4:'Banca'};
+  var LEVEL_NAMES = {1:'Solo qui', 2:'In onda una volta', 3:'Archivio', 4:'Banca'};
   var MONTHS = ['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
   var current = 'tutto';
   try{ var saved = localStorage.getItem('ns-cat'); if(saved && CATS[saved]) current = saved; }catch(e){}
@@ -592,17 +607,19 @@ var FLOOR_CODES = {'1':{code:'1',word:'piano'},'2':{code:'2',word:'piano'},'T':{
   }
   function roomDetail(p){ var i=(p||'').indexOf('·'); return i>-1 ? p.slice(i+1).trim() : ''; }
 
+  function isClosed(r){ return r.livello===2; }
   function meter(level, pub){
-    var m=el('div','meter'+(pub?'':' wait'));
+    var closed=!pub && level===2;
+    var m=el('div','meter'+(pub?'':(closed?' closed':' wait')));
     var c=el('span','cells'); c.setAttribute('aria-hidden','true');
-    for(var i=0;i<5;i++) c.appendChild(el('i', pub && i<=level ? 'on' : ''));
+    for(var i=0;i<5;i++) c.appendChild(el('i', (pub||closed) && i<=level ? 'on' : ''));
     m.appendChild(c);
-    m.appendChild(el('span',null, pub ? level+' · '+LEVEL_NAMES[level] : 'In attesa del consenso'));
+    m.appendChild(el('span',null, (pub||closed) ? level+' · '+LEVEL_NAMES[level] : 'In attesa del consenso'));
     return m;
   }
 
   var tally={tutto:0,voci:0,musica:0,suoni:0}, pubAll=0;
-  raccolte.forEach(function(g){ (g.registrazioni||[]).forEach(function(r){ tally.tutto++; if(tally[r.categoria]!=null) tally[r.categoria]++; if(isPublic(r)) pubAll++; }); });
+  raccolte.forEach(function(g){ (g.registrazioni||[]).forEach(function(r){ if(r.livello===0 || r.livello===1) return; tally.tutto++; if(tally[r.categoria]!=null) tally[r.categoria]++; if(isPublic(r)) pubAll++; }); });
   ORDER.forEach(function(k){ var s=document.querySelector('[data-count="'+k+'"]'); if(s) s.textContent=tally[k]+(tally[k]===1?' registrazione':' registrazioni'); });
   document.getElementById('count').textContent = tally.tutto+' registrazioni · '+pubAll+' pubbliche'+(data.aggiornato ? ' · aggiornato '+fmtStamp(data.aggiornato) : '');
 
@@ -617,7 +634,7 @@ var FLOOR_CODES = {'1':{code:'1',word:'piano'},'2':{code:'2',word:'piano'},'T':{
     var box=document.getElementById('groups'); box.textContent='';
     var shown=0;
     raccolte.forEach(function(g){
-      var recs=(g.registrazioni||[]).filter(function(r){ return current==='tutto' || r.categoria===current; });
+      var recs=(g.registrazioni||[]).filter(function(r){ return r.livello!==0 && r.livello!==1 && (current==='tutto' || r.categoria===current); });
       if(!recs.length) return;
       shown++;
       var art=el('article','group'); art.id='raccolta-'+g.numero;
@@ -643,7 +660,8 @@ var FLOOR_CODES = {'1':{code:'1',word:'piano'},'2':{code:'2',word:'piano'},'T':{
       var log=el('div','log'); log.setAttribute('role','list');
       recs.forEach(function(r){
         var ok=isPublic(r);
-        var row=el('div','row'+(ok?'':' pending')); row.setAttribute('role','listitem');
+        var shut=!ok && isClosed(r);
+        var row=el('div','row'+(ok?'':' pending')+(shut?' closed':'')); row.setAttribute('role','listitem');
         row.dataset.key=g.numero+'-'+r.n;
         row.appendChild(el('span','n',r.n));
         var f=(r.piano_codice && FLOOR_CODES[r.piano_codice]) || floorOf(r.piano);
@@ -654,6 +672,7 @@ var FLOOR_CODES = {'1':{code:'1',word:'piano'},'2':{code:'2',word:'piano'},'T':{
         var sp=el('div','space',r.spazio||''); var rd=roomDetail(r.piano); if(rd) sp.appendChild(el('span','room',rd)); row.appendChild(sp);
         var what=el('div','what');
         what.appendChild(el('p',null,r.titolo));
+        if(shut) what.appendChild(el('div','closed-note', 'Non disponibile: è andata in onda una volta e non è stata conservata.'));
         if(ok){
           var cr=el('div','credit');
           if(current==='tutto' && CATS[r.categoria]) cr.appendChild(el('span','tag',CATS[r.categoria].name));
@@ -701,7 +720,7 @@ var FLOOR_CODES = {'1':{code:'1',word:'piano'},'2':{code:'2',word:'piano'},'T':{
   var LV=[
     {n:0,b:'Cancella',d:'Si cancella prima di lasciare la stanza.',w:'Mai qui'},
     {n:1,b:'Solo qui',d:'La ascoltiamo insieme oggi, poi si cancella.',w:'Mai qui'},
-    {n:2,b:'In onda',d:'Può andare in onda una volta, non si conserva.',w:'Mai qui'},
+    {n:2,b:'In onda',d:'Può andare in onda una volta, non si conserva.',w:'Qui in grigio, senza audio'},
     {n:3,b:'Archivio',d:'La conserviamo e può tornare in onda.',w:'In questa pagina'},
     {n:4,b:'Banca',d:'Entra nella banca sonora libera: chiunque può usarla.',w:'In questa pagina'}
   ];
